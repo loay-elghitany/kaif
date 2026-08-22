@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <main className="min-h-screen p-6 bg-gray-50">
       <header className="max-w-6xl mx-auto mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold">كايف — Kaif</h1>
+        <h1 className="text-3xl font-extrabold">كيف — Kaif</h1>
         <div className="text-gray-600">مجموعة العطور الفاخرة</div>
       </header>
 
