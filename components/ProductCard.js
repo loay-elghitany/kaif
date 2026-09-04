@@ -17,6 +17,9 @@ export default function ProductCard({ product, onAdd }) {
       </div>
       <div className="p-4 flex-1 flex flex-col">
         <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
+        <h5 className="text-sm text-gray-500 mb-2 font-bold">
+          {product.genus}{" "}
+        </h5>
         <p className="text-sm text-gray-600 mb-4 flex-1">
           {product.description}
         </p>
