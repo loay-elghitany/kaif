@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 export default function ProductCard({ product, onAdd }) {
   const variants = product.sizes?.length
@@ -6,61 +7,91 @@ export default function ProductCard({ product, onAdd }) {
     : [{ size: "", price: product.price }];
   const [selectedSize, setSelectedSize] = useState(variants[0]);
 
+  const badge = product.featured
+    ? "Featured"
+    : product.popular
+      ? "Popular"
+      : null;
+
   return (
-    <div className="bg-white shadow-md rounded-xl overflow-hidden flex flex-col">
-      <div className="h-56 w-full relative">
-        <img
+    <article className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+      <div className="relative h-64 overflow-hidden">
+        {badge && (
+          <span className="absolute left-4 top-4 z-10 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-900">
+            {badge}
+          </span>
+        )}
+        <Image
           src={product.image}
           alt={product.name}
-          className="object-cover w-full h-56"
+          fill
+          className="object-cover transition duration-500 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
       </div>
-      <div className="p-4 flex-1 flex flex-col">
-        <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-        <h5 className="text-sm text-gray-500 mb-2 font-bold">
-          {product.genus}{" "}
-        </h5>
-        <p className="text-sm text-gray-600 mb-4 flex-1">
+
+      <div className="flex flex-1 flex-col p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            {product.category || product.genus || "Unisex"}
+          </span>
+          <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-medium text-slate-600">
+            {product.notes || "Fresh blend"}
+          </span>
+        </div>
+
+        <h3 className="text-xl font-bold text-slate-900">{product.name}</h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
           {product.description}
         </p>
+
         {product.sizes?.length > 0 && (
-          <div className="mb-4">
+          <div className="mt-4">
             <label
               htmlFor={`size-${product.id}`}
-              className="block text-sm font-medium mb-2"
+              className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
             >
-              اختر الحجم
+              Size
             </label>
             <select
               id={`size-${product.id}`}
               value={selectedSize.size}
-              onChange={(event) =>
-                setSelectedSize(
-                  variants.find(
-                    (variant) => variant.size === event.target.value,
-                  ),
-                )
-              }
-              className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
+              onChange={(event) => {
+                const nextVariant = variants.find(
+                  (variant) => variant.size === event.target.value,
+                );
+                if (nextVariant) setSelectedSize(nextVariant);
+              }}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white"
             >
               {variants.map((variant) => (
-                <option key={variant.size} value={variant.size}>
+                <option key={variant.size || "default"} value={variant.size}>
                   {variant.size}
                 </option>
               ))}
             </select>
           </div>
         )}
-        <div className="mt-2 flex items-center justify-between">
-          <div className="text-xl font-bold">{selectedSize.price} ج.م</div>
+
+        <div className="mt-5 flex items-end justify-between gap-3">
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Price
+            </div>
+            <div className="text-2xl font-black text-slate-900">
+              {selectedSize.price} ج.م
+            </div>
+          </div>
+
           <button
+            type="button"
             onClick={() => onAdd(product, selectedSize)}
-            className="bg-black text-white px-3 py-2 rounded-md text-sm"
+            className="rounded-full bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
           >
-            أضف إلى السلة
+            Add to cart
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
